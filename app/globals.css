@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/*
+ * STYLING LAYER
+ * Components only use semantic tokens (bg-surface, text-ink, border-line,
+ * bg-accent, rounded-panel…). A theme is just values for those tokens, so the
+ * whole app restyles without touching a component. Add a theme by copying a
+ * block below and listing it in components/shell/SettingsModal.tsx.
+ */
+
+/* ---- Theme: Horizon (default) — Q-SYS dark ---- */
+:root,
+[data-theme="horizon"] {
+  --bg: #0b0b0c;
+  --surface: #161618;
+  --surface-2: #1f1f22;
+  --line: rgb(255 255 255 / 0.09);
+  --ink: #f4f4f5;
+  --ink-muted: rgb(244 244 245 / 0.55);
+  --accent: #0166ff;
+  --accent-2: #00d4ff;
+  --accent-ink: #ffffff;
+  --danger: #ee0153;
+  --ok: #26db18;
+  --warn: #f3c623;
+  --radius: 14px;
+  --display-font: var(--sohne-breit), ui-sans-serif, system-ui, sans-serif;
+  --body-font: var(--sohne), ui-sans-serif, system-ui, sans-serif;
+  --mono-font: var(--sohne-mono), ui-monospace, monospace;
+  --band-1: #00d4ff;
+  --band-2: #f3c623;
+  --band-3: #e816b0;
+  --band-4: #26db18;
+  --band-5: #ff8a3d;
+  --band-6: #a78bfa;
+  color-scheme: dark;
+}
+
+/* ---- Theme: Daylight — same app, light hotel-lobby look ---- */
+[data-theme="daylight"] {
+  --bg: #f4f2f2;
+  --surface: #ffffff;
+  --surface-2: #eceaea;
+  --line: rgb(28 28 28 / 0.12);
+  --ink: #1c1c1c;
+  --ink-muted: rgb(28 28 28 / 0.55);
+  --accent: #0166ff;
+  --accent-2: #0099cc;
+  --accent-ink: #ffffff;
+  --danger: #d4004a;
+  --ok: #138a0b;
+  --warn: #b98a00;
+  --radius: 20px;
+  --band-1: #0166ff;
+  --band-2: #c08a00;
+  --band-3: #c3128f;
+  --band-4: #138a0b;
+  --band-5: #d9661f;
+  --band-6: #6d4fd8;
+  color-scheme: light;
+}
+
+/* ---- Theme: Control Room — high contrast, square, big type ---- */
+[data-theme="control-room"] {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --surface-2: #161616;
+  --line: rgb(255 255 255 / 0.35);
+  --ink: #ffffff;
+  --ink-muted: rgb(255 255 255 / 0.75);
+  --accent: #ffd400;
+  --accent-2: #ffd400;
+  --accent-ink: #000000;
+  --danger: #ff3b3b;
+  --ok: #3bff6b;
+  --warn: #ffd400;
+  --radius: 2px;
+  --display-font: ui-monospace, monospace;
+  --body-font: ui-sans-serif, system-ui, sans-serif;
+  --band-1: #ffd400;
+  --band-2: #00e5ff;
+  --band-3: #ff4fd8;
+  --band-4: #3bff6b;
+  --band-5: #ff8a3d;
+  --band-6: #c4b5fd;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --radius-panel: var(--radius);
+  --font-display: var(--display-font);
+  --font-sans: var(--body-font);
+  --font-mono: var(--mono-font);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body-font);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display-font);
+}
+
+/* The Q-SYS logo is white-on-dark; flip it for the light theme. */
+[data-theme="daylight"] .logo {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.input {
+  width: 100%;
+  border-radius: calc(var(--radius) * 0.6);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  padding: 0.55rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+  outline: none;
+}
+.input:focus {
+  border-color: var(--accent);
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────── */
+
+/* Cards rise in, one after another: add .rise and style={{"--i": n}} */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+.rise {
+  animation: rise 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+}
+.toast-in {
+  animation: toast-in 220ms ease-out both;
+}
+
+/* Settings dialog */
+dialog.modal[open] {
+  animation: toast-in 200ms ease-out;
+}
+
+/* Page transitions (React <ViewTransition> + View Transitions API) */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    150ms ease-in both fade reverse,
+    400ms ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    210ms ease-out 150ms both fade,
+    400ms ease-in-out both slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    150ms ease-in both fade reverse,
+    400ms ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    210ms ease-out 150ms both fade,
+    400ms ease-in-out both slide;
+}
+@keyframes slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+/* Header, tab bar and volume dock stay put while pages slide */
+::view-transition-group(site-header),
+::view-transition-group(tab-bar),
+::view-transition-group(volume-dock) {
+  animation: none;
+  z-index: 10;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
